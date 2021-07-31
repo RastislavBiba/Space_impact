@@ -1,0 +1,118 @@
+<html>
+<head>
+<title>main.py</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #cc7832;}
+.s1 { color: #a9b7c6;}
+.s2 { color: #6a8759;}
+.s3 { color: #808080;}
+.s4 { color: #6897bb;}
+</style>
+</head>
+<body bgcolor="#2b2b2b">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+main.py</font>
+</center></td></tr></table>
+<pre><span class="s0">import </span><span class="s1">pygame</span>
+<span class="s0">import </span><span class="s1">random</span>
+<span class="s0">import </span><span class="s1">sys</span>
+
+<span class="s1">meteor_img = pygame.image.load(</span><span class="s2">&quot;acces/Meteor1.png&quot;</span><span class="s1">)</span>
+<span class="s1">bonus_img = pygame.image.load(</span><span class="s2">&quot;acces/bonus.jpg&quot;</span><span class="s1">)</span>
+<span class="s0">def </span><span class="s1">print_hi(name):</span>
+    <span class="s3"># Use a breakpoint in the code line below to debug your script.</span>
+    <span class="s1">print(</span><span class="s2">f'Hi, </span><span class="s0">{</span><span class="s1">name</span><span class="s0">}</span><span class="s2">'</span><span class="s1">)  </span><span class="s3"># Press ⌘F8 to toggle the breakpoint.</span>
+<span class="s0">def </span><span class="s1">generate_meteor(meteor_img):</span>
+    <span class="s0">return</span><span class="s1">{</span>
+        <span class="s2">&quot;mask&quot;</span><span class="s1">: pygame.mask.from_surface(meteor_img)</span><span class="s0">,</span>
+        <span class="s2">&quot;x&quot;</span><span class="s1">: random.choice(range(</span><span class="s4">10</span><span class="s0">, </span><span class="s4">440</span><span class="s0">, </span><span class="s4">60</span><span class="s1">))</span><span class="s0">,</span>
+        <span class="s2">&quot;y&quot;</span><span class="s1">: random.choice(range(-</span><span class="s4">10</span><span class="s0">, </span><span class="s1">-</span><span class="s4">500</span><span class="s0">, </span><span class="s1">-</span><span class="s4">60</span><span class="s1">))</span><span class="s0">,</span>
+    <span class="s1">}</span>
+<span class="s0">def </span><span class="s1">generate_bonus(bonus_img):</span>
+    <span class="s0">return</span><span class="s1">{</span>
+        <span class="s2">&quot;mask&quot;</span><span class="s1">: pygame.mask.from_surface(bonus_img)</span><span class="s0">,</span>
+        <span class="s2">&quot;x&quot;</span><span class="s1">: random.choice(range(</span><span class="s4">10</span><span class="s0">, </span><span class="s4">440</span><span class="s0">, </span><span class="s4">50</span><span class="s1">))</span><span class="s0">,</span>
+        <span class="s2">&quot;y&quot;</span><span class="s1">: random.choice(range(-</span><span class="s4">10</span><span class="s0">, </span><span class="s1">-</span><span class="s4">500</span><span class="s0">, </span><span class="s1">-</span><span class="s4">50</span><span class="s1">))</span><span class="s0">,</span>
+    <span class="s1">}</span>
+<span class="s0">def </span><span class="s1">kolizia(mask1</span><span class="s0">, </span><span class="s1">mask2</span><span class="s0">, </span><span class="s1">mask1_coords</span><span class="s0">, </span><span class="s1">mask2_coords):</span>
+    <span class="s1">x_off = mask2_coords[</span><span class="s4">0</span><span class="s1">] - mask1_coords[</span><span class="s4">0</span><span class="s1">]</span>
+    <span class="s1">y_off = mask2_coords[</span><span class="s4">1</span><span class="s1">] - mask1_coords[</span><span class="s4">1</span><span class="s1">]</span>
+    <span class="s0">if </span><span class="s1">mask1.overlap(mask2</span><span class="s0">, </span><span class="s1">(x_off</span><span class="s0">, </span><span class="s1">y_off)):</span>
+        <span class="s0">return True</span>
+    <span class="s0">else</span><span class="s1">:</span>
+        <span class="s0">return False</span>
+
+<span class="s3"># Press the green button in the gutter to run the script.</span>
+<span class="s0">if </span><span class="s1">__name__ == </span><span class="s2">'__main__'</span><span class="s1">:</span>
+    <span class="s1">pygame.init()</span>
+    <span class="s1">clock = pygame.time.Clock()</span>
+    <span class="s1">meteors= []</span>
+    <span class="s1">meteor_speed = </span><span class="s4">0</span>
+    <span class="s1">pocet = </span><span class="s4">5</span>
+    <span class="s1">bg = pygame.image.load(</span><span class="s2">&quot;acces/background.jpg&quot;</span><span class="s1">)</span>
+    <span class="s1">lod = pygame.image.load(</span><span class="s2">&quot;acces/ship.png&quot;</span><span class="s1">)</span>
+
+    <span class="s1">window = pygame.display.set_mode((</span><span class="s4">500</span><span class="s0">, </span><span class="s4">800</span><span class="s1">))</span>
+
+    <span class="s1">game_font = pygame.font.SysFont(</span><span class="s2">&quot;Arial&quot;</span><span class="s0">, </span><span class="s4">20</span><span class="s1">)</span>
+    <span class="s1">ship_x=(</span><span class="s4">250</span><span class="s1">)</span>
+    <span class="s1">ship_y = (</span><span class="s4">720</span><span class="s1">)</span>
+
+    <span class="s1">meteor_x= (</span><span class="s4">250</span><span class="s1">)</span>
+    <span class="s1">meteor_y=(</span><span class="s4">0</span><span class="s1">)</span>
+    <span class="s1">score = </span><span class="s4">0</span>
+    <span class="s1">lod_mask = pygame.mask.from_surface(lod)</span>
+    <span class="s1">bonus_mask = pygame.mask.from_surface(bonus_img)</span>
+    <span class="s1">live = </span><span class="s4">3</span>
+    <span class="s0">while True</span><span class="s1">:</span>
+        <span class="s1">score_text = game_font.render(</span><span class="s2">f&quot;Score: </span><span class="s0">{</span><span class="s1">score</span><span class="s0">}</span><span class="s2">&quot;</span><span class="s0">, True, </span><span class="s1">(</span><span class="s4">255</span><span class="s0">,</span><span class="s4">255</span><span class="s0">,</span><span class="s4">255</span><span class="s1">))</span>
+        <span class="s1">live_text = game_font.render(</span><span class="s2">f&quot;Live: </span><span class="s0">{</span><span class="s1">live</span><span class="s0">}</span><span class="s2">&quot;</span><span class="s0">, True, </span><span class="s1">(</span><span class="s4">255</span><span class="s0">,</span><span class="s4">255</span><span class="s0">,</span><span class="s4">255</span><span class="s1">))</span>
+        <span class="s0">if </span><span class="s1">len(meteors) == </span><span class="s4">0</span><span class="s1">:</span>
+            <span class="s0">for </span><span class="s1">i </span><span class="s0">in </span><span class="s1">range(pocet):</span>
+                <span class="s0">if </span><span class="s1">random.randint(</span><span class="s4">1</span><span class="s0">,</span><span class="s4">7</span><span class="s1">) == </span><span class="s4">5</span><span class="s1">:</span>
+                    <span class="s1">meteors.append(generate_bonus(bonus_img))</span>
+                <span class="s1">meteors.append(generate_meteor(meteor_img))</span>
+            <span class="s1">meteor_speed += </span><span class="s4">1</span>
+            <span class="s1">pocet += </span><span class="s4">1</span>
+        <span class="s0">for </span><span class="s1">event </span><span class="s0">in </span><span class="s1">pygame.event.get():</span>
+            <span class="s0">if </span><span class="s1">event.type == pygame.QUIT:</span>
+                <span class="s1">pygame.quit()</span>
+                <span class="s1">sys.exit()</span>
+
+        <span class="s1">keys = pygame.key.get_pressed()</span>
+        <span class="s0">if </span><span class="s1">keys[pygame.K_LEFT]:</span>
+            <span class="s0">if </span><span class="s1">ship_x &gt; </span><span class="s4">0</span><span class="s1">:</span>
+                <span class="s1">ship_x -= </span><span class="s4">5</span>
+        <span class="s0">if </span><span class="s1">keys[pygame.K_RIGHT]:</span>
+            <span class="s0">if </span><span class="s1">ship_x &lt; </span><span class="s4">430</span><span class="s1">:</span>
+                <span class="s1">ship_x += </span><span class="s4">5</span>
+        <span class="s1">window.blit(bg</span><span class="s0">, </span><span class="s1">(</span><span class="s4">0</span><span class="s0">, </span><span class="s4">0</span><span class="s1">))</span>
+        <span class="s0">if </span><span class="s1">live &gt; </span><span class="s4">0</span><span class="s1">:</span>
+            <span class="s0">for </span><span class="s1">meteor </span><span class="s0">in </span><span class="s1">meteors[:]:</span>
+                <span class="s1">window.blit(meteor_img</span><span class="s0">, </span><span class="s1">(meteor[</span><span class="s2">&quot;x&quot;</span><span class="s1">]</span><span class="s0">, </span><span class="s1">meteor[</span><span class="s2">&quot;y&quot;</span><span class="s1">]))</span>
+                <span class="s1">meteor[</span><span class="s2">&quot;y&quot;</span><span class="s1">] += meteor_speed</span>
+                <span class="s0">if </span><span class="s1">meteor[</span><span class="s2">&quot;y&quot;</span><span class="s1">] &gt; </span><span class="s4">800</span><span class="s1">:</span>
+                    <span class="s1">score += </span><span class="s4">1</span>
+                    <span class="s1">meteors.remove(meteor)</span>
+
+                <span class="s0">if </span><span class="s1">kolizia(lod_mask</span><span class="s0">, </span><span class="s1">meteor[</span><span class="s2">'mask'</span><span class="s1">]</span><span class="s0">, </span><span class="s1">(meteor[</span><span class="s2">&quot;x&quot;</span><span class="s1">]</span><span class="s0">, </span><span class="s1">meteor[</span><span class="s2">&quot;y&quot;</span><span class="s1">])</span><span class="s0">,</span><span class="s1">(ship_x</span><span class="s0">, </span><span class="s1">ship_y)):</span>
+                    <span class="s1">live -= </span><span class="s4">1</span>
+                <span class="s0">else</span><span class="s1">:</span>
+                    <span class="s1">live = </span><span class="s4">1</span>
+        <span class="s0">if </span><span class="s1">live == </span><span class="s4">0</span><span class="s1">:</span>
+            <span class="s1">koniec_text = game_font.render(</span><span class="s2">f&quot;GAME OVER&quot;</span><span class="s0">, True, </span><span class="s1">(</span><span class="s4">255</span><span class="s0">,</span><span class="s4">255</span><span class="s0">,</span><span class="s4">255</span><span class="s1">))</span>
+            <span class="s1">window.blit(koniec_text</span><span class="s0">, </span><span class="s1">(</span><span class="s4">155</span><span class="s0">, </span><span class="s4">400</span><span class="s1">))</span>
+
+        <span class="s1">window.blit(score_text</span><span class="s0">, </span><span class="s1">(</span><span class="s4">350</span><span class="s0">,</span><span class="s4">20</span><span class="s1">))</span>
+        <span class="s1">window.blit(live_text</span><span class="s0">, </span><span class="s1">(</span><span class="s4">20</span><span class="s0">, </span><span class="s4">20</span><span class="s1">))</span>
+        <span class="s1">window.blit(lod</span><span class="s0">, </span><span class="s1">(ship_x</span><span class="s0">,</span><span class="s1">ship_y))</span>
+
+        <span class="s1">pygame.display.update()</span>
+        <span class="s1">clock.tick(</span><span class="s4">60</span><span class="s1">)</span>
+
+</pre>
+</body>
+</html>
